@@ -1,0 +1,232 @@
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        SklepKomputerowy sklep = new SklepKomputerowy();
+
+        Produkt produkt1 = new Produkt(1, "Laptop Dell XPS 13", "Laptop", 4999.99, 10);
+        Produkt produkt2 = new Produkt(2, "Mysz Logitech MX Master 3", "Mysz", 349.99, 30);
+        Produkt produkt3 = new Produkt(3, "Monitor Samsung 27\"", "Monitor", 1299.99, 15);
+
+        sklep.dodajProdukt(produkt1);
+        sklep.dodajProdukt(produkt2);
+        sklep.dodajProdukt(produkt3);
+
+        Klient klient1 = new Klient(1, "Jan", "Kowalski", "jan.kowalski@example.com", true);
+        Klient klient2 = new Klient(2, "Anna", "Nowak", "anna.nowak@example.com", false);
+
+        sklep.dodajKlienta(klient1);
+        sklep.dodajKlienta(klient2);
+
+        Produkt[] produktyZamowienia1 = {produkt1, produkt2};
+        int[] ilosciZamowienia1 = {1, 1};
+
+        Zamowienie zamowienie1 = sklep.utworzZamowienie(klient1, produktyZamowienia1, ilosciZamowienia1);
+        zamowienie1.zastosujZnizke();
+        sklep.aktualizujStanMagazynowy(zamowienie1);
+
+        System.out.println("Informacje o zamówieniu:");
+        zamowienie1.wyswietlSzczegoly();
+
+        System.out.println("\nStan magazynowy po zamówieniu:");
+        sklep.wyswietlProduktyWKategorii("Laptop");
+        sklep.wyswietlProduktyWKategorii("Mysz");
+
+        sklep.zmienStatusZamowienia(zamowienie1.getId(), "Zrealizowane");
+        System.out.println("\nStatus zamówienia po aktualizacji:");
+        zamowienie1.wyswietlSzczegoly();
+
+        Produkt[] produktyZamowienia2 = {produkt3, produkt2};
+        int[] ilosciZamowienia2 = {2, 1};
+
+        Zamowienie zamowienie2 = sklep.utworzZamowienie(klient2, produktyZamowienia2, ilosciZamowienia2);
+        sklep.aktualizujStanMagazynowy(zamowienie2);
+
+        System.out.println("\nZamówienia klienta Jan Kowalski:");
+        sklep.wyswietlZamowieniaKlienta(1);
+    }
+}
+
+// Produkt.java
+public class Produkt {
+    private int id;
+    private String nazwa;
+    private String kategoria;
+    private double cena;
+    private int iloscWMagazynie;
+
+    public Produkt() {}
+
+    public Produkt(int id, String nazwa, String kategoria, double cena, int iloscWMagazynie) {
+        this.id = id;
+        this.nazwa = nazwa;
+        this.kategoria = kategoria;
+        this.cena = cena;
+        this.iloscWMagazynie = iloscWMagazynie;
+    }
+
+    public int getId() { return id; }
+    public void setId(int value) { id = value; }
+
+    public String getNazwa() { return nazwa; }
+    public void setNazwa(String value) { nazwa = value; }
+
+    public String getKategoria() { return kategoria; }
+    public void setKategoria(String value) { kategoria = value; }
+
+    public double getCena() { return cena; }
+    public void setCena(double value) { cena = value; }
+
+    public int getIloscWMagazynie() { return iloscWMagazynie; }
+    public void setIloscWMagazynie(int value) { iloscWMagazynie = value; }
+
+    public void wyswietlInformacje() {
+        System.out.println("ID: " + id + ", Nazwa: " + nazwa + ", Kategoria: " + kategoria + ", Cena: " + cena + ", Ilosc: " + iloscWMagazynie);
+    }
+}
+
+// Klient.java
+public class Klient {
+    private int id;
+    private String imie;
+    private String nazwisko;
+    private String email;
+    private boolean czyStaly;
+
+    public Klient() {}
+
+    public Klient(int id, String imie, String nazwisko, String email, boolean czyStaly) {
+        this.id = id;
+        this.imie = imie;
+        this.nazwisko = nazwisko;
+        this.email = email;
+        this.czyStaly = czyStaly;
+    }
+
+    public int getId() { return id; }
+    public void setId(int value) { id = value; }
+
+    public String getImie() { return imie; }
+    public void setImie(String value) { imie = value; }
+
+    public String getNazwisko() { return nazwisko; }
+    public void setNazwisko(String value) { nazwisko = value; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String value) { email = value; }
+
+    public boolean isCzyStaly() { return czyStaly; }
+    public void setCzyStaly(boolean value) { czyStaly = value; }
+
+    public void wyswietlInformacje() {
+        System.out.println("ID: " + id + ", Imie: " + imie + ", Nazwisko: " + nazwisko + ", Email: " + email + ", Staly klient: " + czyStaly);
+    }
+}
+
+// Zamowienie.java
+import java.time.LocalDate;
+
+public class Zamowienie {
+    private int id;
+    Klient klient;
+    Produkt[] produkty;
+    int[] ilosci;
+    private LocalDate dataZamowienia;
+    private String status;
+
+    public Zamowienie(int zamowienieId, Klient k, Produkt[] p, int[] i) {
+        id = zamowienieId;
+        klient = k;
+        produkty = p;
+        ilosci = i;
+        dataZamowienia = LocalDate.now();
+        status = "Nowe";
+    }
+
+    public void zastosujZnizke() {
+        if (klient.isCzyStaly()) {
+            for (Produkt p : produkty) {
+                p.setCena(p.getCena() * 0.9);
+            }
+        }
+    }
+
+    public double obliczWartoscZamowienia() {
+        double suma = 0;
+        for (int i = 0; i < produkty.length; i++) {
+            suma += produkty[i].getCena() * ilosci[i];
+        }
+        return suma;
+    }
+
+    public void wyswietlSzczegoly() {
+        System.out.println("Zamowienie ID: " + id);
+        klient.wyswietlInformacje();
+        for (int i = 0; i < produkty.length; i++) {
+            produkty[i].wyswietlInformacje();
+            System.out.println("Ilosc: " + ilosci[i]);
+        }
+        System.out.println("Data: " + dataZamowienia + ", Status: " + status);
+        System.out.println("Wartosc: " + obliczWartoscZamowienia());
+    }
+
+    public int getId() { return id; }
+    public void setStatus(String value) { status = value; }
+}
+
+// SklepKomputerowy.java
+public class SklepKomputerowy {
+    private Produkt[] produkty = new Produkt[100];
+    private Klient[] klienci = new Klient[100];
+    private Zamowienie[] zamowienia = new Zamowienie[100];
+    private int liczbaProduktow = 0;
+    private int liczbaKlientow = 0;
+    private int liczbaZamowien = 0;
+
+    public void dodajProdukt(Produkt p) {
+        produkty[liczbaProduktow] = p;
+        liczbaProduktow++;
+    }
+
+    public void dodajKlienta(Klient k) {
+        klienci[liczbaKlientow] = k;
+        liczbaKlientow++;
+    }
+
+    public Zamowienie utworzZamowienie(Klient k, Produkt[] p, int[] i) {
+        Zamowienie z = new Zamowienie(liczbaZamowien + 1, k, p, i);
+        zamowienia[liczbaZamowien] = z;
+        liczbaZamowien++;
+        return z;
+    }
+
+    public void aktualizujStanMagazynowy(Zamowienie z) {
+        for (int i = 0; i < z.produkty.length; i++) {
+            int nowaIlosc = z.produkty[i].getIloscWMagazynie() - z.ilosci[i];
+            z.produkty[i].setIloscWMagazynie(nowaIlosc);
+        }
+    }
+
+    public void zmienStatusZamowienia(int idZamowienia, String nowyStatus) {
+        for (int i = 0; i < liczbaZamowien; i++) {
+            if (zamowienia[i].getId() == idZamowienia) {
+                zamowienia[i].setStatus(nowyStatus);
+            }
+        }
+    }
+
+    public void wyswietlProduktyWKategorii(String kategoria) {
+        for (int i = 0; i < liczbaProduktow; i++) {
+            if (produkty[i].getKategoria().equals(kategoria)) {
+                produkty[i].wyswietlInformacje();
+            }
+        }
+    }
+
+    public void wyswietlZamowieniaKlienta(int idKlienta) {
+        for (int i = 0; i < liczbaZamowien; i++) {
+            if (zamowienia[i].klient.getId() == idKlienta) {
+                zamowienia[i].wyswietlSzczegoly();
+            }
+        }
+    }
+}
