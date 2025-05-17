@@ -1,8 +1,7 @@
-public class wydarzenie
 // Klasa Wydarzenie
 import java.util.*;
 
-class Wydarzenie {
+public class Wydarzenie {
     private String nazwa;
     private String data;
     private String miejsce;
@@ -48,13 +47,15 @@ class Wydarzenie {
     public void zarezerwujMiejsce() {
         if (dostepneMiejsca < maxLiczbaMiejsc) {
             dostepneMiejsca++;
+        } else {
+            System.out.println("Brak dostepnych miejsc na to wydarzenie.");
         }
     }
 
     @Override
     public String toString() {
         return "Wydarzenie: " + nazwa + ", data: " + data + ", miejsce: " + miejsce +
-                ", cena: " + cena + " zł, miejsca: " + dostepneMiejsca + "/" + maxLiczbaMiejsc;
+                ", cena: " + cena + " PLN, miejsca: " + dostepneMiejsca + "/" + maxLiczbaMiejsc;
     }
 }
 
@@ -77,8 +78,8 @@ class Klient {
     }
 
     // Gettery i settery
-    public String getImię() { return imie; }
-    public void setImię(String imie) { this.imie = imie; }
+    public String getImie() { return imie; }
+    public void setImie(String imie) { this.imie = imie; }
 
     public String getNazwisko() { return nazwisko; }
     public void setNazwisko(String nazwisko) { this.nazwisko = nazwisko; }
@@ -86,70 +87,10 @@ class Klient {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public void dodajRezerwację(Wydarzenie wydarzenie) {
+    public void dodajRezerwacje(Wydarzenie wydarzenie) {
         listaRezerwacji.add(wydarzenie);
     }
 
-    public void anulujRezerwację(Wydarzenie wydarzenie) {
+    public void anulujRezerwacje(Wydarzenie wydarzenie) {
         listaRezerwacji.remove(wydarzenie);
     }
-
-    public void wyświetlRezerwacje() {
-        for (Wydarzenie w : listaRezerwacji) {
-            System.out.println(w);
-        }
-    }
-}
-
-// Klasa SystemRezerwacji
-class SystemRezerwacji {
-    private ArrayList<Wydarzenie> listaWydarzeń = new ArrayList<>();
-    private ArrayList<Klient> listaKlientów = new ArrayList<>();
-
-    public void dodajWydarzenie(Wydarzenie wydarzenie) {
-        listaWydarzeń.add(wydarzenie);
-    }
-
-    public void dodajWydarzenie(String nazwa, double cena) {
-        listaWydarzeń.add(new Wydarzenie(nazwa, cena));
-    }
-
-    public void dodajKlienta(Klient klient) {
-        listaKlientów.add(klient);
-    }
-
-    public void dodajKlienta(String imie, String nazwisko) {
-        listaKlientów.add(new Klient(imie, nazwisko));
-    }
-
-    public void dokonajRezerwacji(Klient klient, Wydarzenie wydarzenie) {
-        wydarzenie.zarezerwujMiejsce();
-        klient.dodajRezerwację(wydarzenie);
-    }
-
-    public Wydarzenie znajdźWydarzenie(String nazwa) {
-        for (Wydarzenie w : listaWydarzeń) {
-            if (w.getNazwa().equalsIgnoreCase(nazwa)) {
-                return w;
-            }
-        }
-        return null;
-    }
-
-    public Klient znajdźKlienta(String nazwisko) {
-        for (Klient k : listaKlientów) {
-            if (k.getNazwisko().equalsIgnoreCase(nazwisko)) {
-                return k;
-            }
-        }
-        return null;
-    }
-
-    public void zmieńCenęWydarzenia(String nazwa, double nowaCena) {
-        Wydarzenie wydarzenie = znajdźWydarzenie(nazwa);
-        if (wydarzenie != null) {
-            wydarzenie.setCena(nowaCena);
-        }
-    }
-}{
-}
