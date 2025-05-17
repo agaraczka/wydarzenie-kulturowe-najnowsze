@@ -1,7 +1,7 @@
 // Klasa Wydarzenie
 import java.util.*;
 
-public class Wydarzenie {
+class Wydarzenie {
     private String nazwa;
     private String data;
     private String miejsce;
@@ -60,20 +60,20 @@ public class Wydarzenie {
 }
 
 // Klasa Klient
-class Klient {
+class Klientt {
     private String imie;
     private String nazwisko;
     private String email;
     private ArrayList<Wydarzenie> listaRezerwacji = new ArrayList<>();
 
     // Konstruktory
-    public Klient(String imie, String nazwisko, String email) {
+    public Klientt(String imie, String nazwisko, String email) {
         this.imie = imie;
         this.nazwisko = nazwisko;
         this.email = email;
     }
 
-    public Klient(String imie, String nazwisko) {
+    public Klientt(String imie, String nazwisko) {
         this(imie, nazwisko, "brak@domena.com");
     }
 
@@ -94,3 +94,4 @@ class Klient {
     public void anulujRezerwacje(Wydarzenie wydarzenie) {
         listaRezerwacji.remove(wydarzenie);
     }
+
